@@ -1,7 +1,3 @@
-#include <SFML/Graphics.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include<SFML/Window/WindowStyle.hpp>
-#include<SFML/System/Clock.hpp>
 #include<iostream>
 #include "Engine.h"
 
