@@ -1,9 +1,5 @@
 #include "Engine.h"
-#include <SFML/Graphics.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include<SFML/Window/WindowStyle.hpp>
-#include<SFML/System/Clock.hpp>
-#include<iostream>
+#include "PrimitiveRender.h"
 
 Engine::Engine(int screenWidth, int screenHeight, std::string windowTitle) {
 	this->screenWidth = screenWidth;
@@ -18,14 +14,24 @@ Engine::Engine(int screenWidth, int screenHeight) {
 }
 int Engine::init() {
 	sf::RenderWindow window(sf::VideoMode(screenWidth, screenHeight), "SFML");
+	PrimitiveRender p1;
 	while (window.isOpen())
 	{
+		window.clear(color);
 		sf::Time time = clock.restart();
 		float frameTime = time.asSeconds();
 		sf::Event event;
+		p1.drawCircle(window, 50, 100, 100, sf::Color::Blue);
+		p1.drawRectangle(window, 50, 50, 300, 300);
+		p1.drawTriangle(window, 50, 100, 300, sf::Color::Red);
+		p1.drawPoint(window, 10, 15, sf::Color::Green);
+		p1.drawLine(window, 100, 100, 200, 200, sf::Color::Red);
+		p1.incrementalAlghorithm(window, 250, 250, 350, 350, sf::Color::Green);
 
-		if (!square.loadFromFile("square.png"))
-			return EXIT_FAILURE;
+		if (!square.loadFromFile("square.png")) {
+			throw EXIT_FAILURE;
+			//return EXIT_FAILURE;
+		}
 		sprite.setTexture(square);
 
 		while (window.pollEvent(event))
@@ -74,7 +80,6 @@ int Engine::init() {
 			}
 		}
 		//sf::Time elapsed = clock.getElapsedTime();
-		window.clear(color);
 		window.draw(sprite);
 		window.display();
 	}

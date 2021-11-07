@@ -4,9 +4,11 @@
 #include<SFML/Window/WindowStyle.hpp>
 #include<SFML/System/Clock.hpp>
 #include<iostream>
+#include <cmath>
+
 class Engine
 {
-public:
+private:
 	int screenWidth = 0, screenHeight = 0;
 	std::string windowTitle;
 	sf::Clock clock;
@@ -15,11 +17,11 @@ public:
 	sf::Sprite sprite;
 	sf::Color color;
 	sf::Mouse mouse;
+	void paintScreen(sf::Color color);
 public:
 	Engine(int screenWidth, int screenHeight, std::string windowTitle);
 	Engine(int screenWidth, int screenHeight);
 	int init();
-	void paintScreen(sf::Color color);
-
+	//~Engine();
 };
 
