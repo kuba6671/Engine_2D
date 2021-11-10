@@ -15,6 +15,19 @@ Engine::Engine(int screenWidth, int screenHeight) {
 int Engine::init() {
 	sf::RenderWindow window(sf::VideoMode(screenWidth, screenHeight), "SFML");
 	PrimitiveRender p1;
+	Point2D point1(1, 1);
+	Point2D point2(100, 50);
+	Point2D point3(100, 50);
+	Point2D point4(250, 250);
+	Point2D point5(250, 250);
+	Point2D point6(50, 300);
+	LineSegment line1(point1,point2);
+	LineSegment line2(point3, point4);
+	LineSegment line3(point5, point6);
+	std::vector<LineSegment> lines;
+	lines.push_back(line1);
+	lines.push_back(line2);
+	lines.push_back(line3);
 	while (window.isOpen())
 	{
 		window.clear(color);
@@ -27,6 +40,9 @@ int Engine::init() {
 		p1.drawPoint(window, 10, 15, sf::Color::Green);
 		p1.drawLine(window, 100, 100, 200, 200, sf::Color::Red);
 		p1.incrementalAlghorithm(window, 250, 250, 350, 350, sf::Color::Green);
+		p1.drawPoint(window, point1, sf::Color::Yellow);
+		p1.drawLine(window, line1);
+		p1.drawPolyline(window,lines);
 
 		if (!square.loadFromFile("square.png")) {
 			throw EXIT_FAILURE;
