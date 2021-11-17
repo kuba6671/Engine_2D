@@ -15,34 +15,61 @@ Engine::Engine(int screenWidth, int screenHeight) {
 int Engine::init() {
 	sf::RenderWindow window(sf::VideoMode(screenWidth, screenHeight), "SFML");
 	PrimitiveRender p1;
-	Point2D point1(1, 1);
-	Point2D point2(100, 50);
-	Point2D point3(100, 50);
+	Point2D point1(100, 100);
+	Point2D point2(110, 50);
+	Point2D point3(150, 50);
 	Point2D point4(250, 250);
-	Point2D point5(250, 250);
-	Point2D point6(50, 300);
-	LineSegment line1(point1,point2);
+	Point2D point5(300, 250);
+	Point2D point6(200, 300);
+
+	Point2D point7(190, 225);
+
+
+	/*LineSegment line1(point1, point2);
 	LineSegment line2(point3, point4);
 	LineSegment line3(point5, point6);
 	std::vector<LineSegment> lines;
 	lines.push_back(line1);
 	lines.push_back(line2);
-	lines.push_back(line3);
+	lines.push_back(line3);*/
+
+	std::vector<Point2D> points;
+	points.push_back(point1);
+	points.push_back(point2);
+	points.push_back(point3);
+	points.push_back(point4);
+	points.push_back(point5);
+	points.push_back(point6);
+
+	/*sf::Texture texture;
+	texture.create(window.getSize().x, window.getSize().y);
+	texture.update(window);
+	auto image = texture.copyToImage();*/
+
 	while (window.isOpen())
 	{
 		window.clear(color);
 		sf::Time time = clock.restart();
 		float frameTime = time.asSeconds();
 		sf::Event event;
-		p1.drawCircle(window, 50, 100, 100, sf::Color::Blue);
-		p1.drawRectangle(window, 50, 50, 300, 300);
+		//p1.drawCircle(window, 50, 100, 100, sf::Color::Blue);
+		/*p1.drawRectangle(window, 50, 50, 300, 300);
 		p1.drawTriangle(window, 50, 100, 300, sf::Color::Red);
 		p1.drawPoint(window, 10, 15, sf::Color::Green);
 		p1.drawLine(window, 100, 100, 200, 200, sf::Color::Red);
 		p1.incrementalAlghorithm(window, 250, 250, 350, 350, sf::Color::Green);
 		p1.drawPoint(window, point1, sf::Color::Yellow);
 		p1.drawLine(window, line1);
-		p1.drawPolyline(window,lines);
+		p1.drawPolyline(window,lines);*/
+		//p1.drawCircleSym8(window, 200, 200, 50, sf::Color::Blue);
+		//p1.drawEllipseSym4(window, 50,150,150,150, sf::Color::Red);
+		
+		//p1.boundryFill(window,point1,sf::Color::Blue, sf::Color::Red);
+		 
+		p1.drawPoint(window,190,225);
+
+		p1.drawPolygon(window,points);
+
 
 		if (!square.loadFromFile("square.png")) {
 			throw EXIT_FAILURE;

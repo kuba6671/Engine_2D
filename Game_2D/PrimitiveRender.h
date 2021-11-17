@@ -2,6 +2,13 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <cmath>
+#include <algorithm>
+#include <vector>
+#include<SFML/Graphics/Image.hpp>
+#include<SFML/Graphics/RenderTexture.hpp>
+#include<queue>
+#include<stack>
+
 
 class Point2D {
 	int x, y;
@@ -13,6 +20,7 @@ public:
 	void changeX(int x);
 	void changeY(int y);
 };
+
 
 class LineSegment {
 	Point2D point1, point2;
@@ -47,11 +55,18 @@ public:
 	void drawTriangle(sf::RenderWindow& window, int size, int x, int y, sf::Color color);
 	void drawPoint(sf::RenderWindow& window, int x, int y);
 	void drawPoint(sf::RenderWindow& window, int x, int y, sf::Color color);
+	void drawPoint(sf::RenderWindow& window, float x, float y, sf::Color color);
 	void drawPoint(sf::RenderWindow& window, Point2D point2D);
 	void drawPoint(sf::RenderWindow& window, Point2D point2D, sf::Color color);
 	void incrementalAlghorithm(sf::RenderWindow& window, int x1, int y1, int x2, int y2);
 	void incrementalAlghorithm(sf::RenderWindow& window, int x1, int y1, int x2, int y2, sf::Color color);
 	void drawPolyline(sf::RenderWindow& window, std::vector<LineSegment> lineVector);
+	void drawCircleSym8(sf::RenderWindow& window, float xCenter, float yCenter, float radius, sf::Color color);
+	void drawEllipseSym4(sf::RenderWindow& window, int rx, int ry, int positionX, int PositionY, sf::Color color);
+	double cross(Point2D O, Point2D A, Point2D B);
+	void drawPolygon(sf::RenderWindow& window, std::vector<Point2D> P);
+	void boundryFill(sf::RenderWindow& window, int x, int y, sf::Color fill_color, sf::Color boundry_color);
+	void floodFill(sf::RenderWindow& window, int x, int y, sf::Color fill_color, sf::Color boundry_color);
 };
 
 

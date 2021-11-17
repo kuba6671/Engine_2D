@@ -1,4 +1,5 @@
 #include "PrimitiveRender.h"
+#include <iostream>
 
 
 void PrimitiveRender::drawLine(sf::RenderWindow& window, int x1, int y1, int x2, int y2) {
@@ -44,6 +45,37 @@ void PrimitiveRender::drawCircle(sf::RenderWindow& window, int size, int x, int 
 	circle.setFillColor(color);
 	window.draw(circle);
 }
+void PrimitiveRender::drawCircleSym8(sf::RenderWindow& window, float xCenter, float yCenter, float radius, sf::Color color) {
+	float x, y, r2;
+	r2 = radius * radius;
+	drawPoint(window, xCenter, yCenter + radius, color);
+	drawPoint(window, xCenter, yCenter - radius, color);
+	drawPoint(window, xCenter + radius, yCenter, color);
+	drawPoint(window, xCenter - radius, yCenter, color);
+	y = radius;
+	x = 1;
+	y = sqrt(r2 - 1) + 0.5;
+	while (x < y) {
+		drawPoint(window, float(xCenter + x), float(yCenter + y), color);
+		drawPoint(window, float(xCenter + x), float(yCenter - y), color);
+		drawPoint(window, float(xCenter - x), float(yCenter + y), color);
+		drawPoint(window, float(xCenter - x), float(yCenter - y), color);
+		drawPoint(window, float(xCenter + y), float(yCenter + x), color);
+		drawPoint(window, float(xCenter + y), float(yCenter - x), color);
+		drawPoint(window, float(xCenter - y), float(yCenter + x), color);
+		drawPoint(window, float(xCenter - y), float(yCenter - x), color);
+		x += 1;
+		y = sqrt(r2 - x * x) + 0.5;
+	}
+	if (x == y) {
+		drawPoint(window, float(xCenter + x), float(yCenter + y), color);
+		drawPoint(window, float(xCenter + x), float(yCenter - y), color);
+		drawPoint(window, float(xCenter - x), float(yCenter + y), color);
+		drawPoint(window, float(xCenter - x), float(yCenter - y), color);
+
+	}
+
+}
 void PrimitiveRender::drawRectangle(sf::RenderWindow& window, int sizeX, int sizeY, int x, int y) {
 	sf::RectangleShape rectangle(sf::Vector2f(sizeX, sizeY));
 	rectangle.setPosition(sf::Vector2f(x, y));
@@ -68,6 +100,10 @@ void PrimitiveRender::drawTriangle(sf::RenderWindow& window, int size, int x, in
 }
 void PrimitiveRender::drawPoint(sf::RenderWindow& window, int x, int y) {
 	sf::Vertex point(sf::Vector2f(x, y));
+	window.draw(&point, 1, sf::Points);
+}
+void PrimitiveRender::drawPoint(sf::RenderWindow& window, float x, float y, sf::Color color) {
+	sf::Vertex point(sf::Vector2f(x, y), color);
 	window.draw(&point, 1, sf::Points);
 }
 void PrimitiveRender::drawPoint(sf::RenderWindow& window, int x, int y, sf::Color color) {
@@ -102,6 +138,7 @@ void PrimitiveRender::incrementalAlghorithm(sf::RenderWindow& window, int x1, in
 	}
 }
 void PrimitiveRender::incrementalAlghorithm(sf::RenderWindow& window, int x1, int y1, int x2, int y2, sf::Color color) {
+
 	int x;
 	float dy = y2 - y1;
 	float dx = x2 - x1;
@@ -122,9 +159,130 @@ void PrimitiveRender::incrementalAlghorithm(sf::RenderWindow& window, int x1, in
 }
 void PrimitiveRender::drawPolyline(sf::RenderWindow& window, std::vector<LineSegment> lineVector) {
 	std::vector<LineSegment>::iterator it = lineVector.begin();
-	
+
 	for (LineSegment& x : lineVector) {
 		drawLine(window, x);
+	}
+}
+
+void PrimitiveRender::drawEllipseSym4(sf::RenderWindow& window, int rx, int ry, int positionX, int positionY, sf::Color color) {
+	float dx, dy, d1, d2, x, y;
+	x = 0;
+	y = ry;
+
+	d1 = (ry * ry) - (rx * rx * ry) +
+		(0.25 * rx * rx);
+	dx = 2 * ry * ry * x;
+	dy = 2 * rx * rx * y;
+
+	while (dx < dy)
+	{
+		drawPoint(window, x + positionX, y + positionY, color);
+		drawPoint(window, -x + positionX, y + positionY, color);
+		drawPoint(window, x + positionX, -y + positionY, color);
+		drawPoint(window, -x + positionX, -y + positionY, color);
+
+		if (d1 < 0)
+		{
+			x++;
+			dx = dx + (2 * ry * ry);
+			d1 = d1 + dx + (ry * ry);
+		}
+		else
+		{
+			x++;
+			y--;
+			dx = dx + (2 * ry * ry);
+			dy = dy - (2 * rx * rx);
+			d1 = d1 + dx - dy + (ry * ry);
+		}
+	}
+
+	d2 = ((ry * ry) * ((x + 0.5) * (x + 0.5))) +
+		((rx * rx) * ((y - 1) * (y - 1))) -
+		(rx * rx * ry * ry);
+
+	while (y >= 0)
+	{
+		drawPoint(window, x + positionX, y + positionY, color);
+		drawPoint(window, -x + positionX, y + positionY, color);
+		drawPoint(window, x + positionX, -y + positionY, color);
+		drawPoint(window, -x + positionX, -y + positionY, color);
+
+		if (d2 > 0)
+		{
+			y--;
+			dy = dy - (2 * rx * rx);
+			d2 = d2 + (rx * rx) - dy;
+		}
+		else
+		{
+			y--;
+			x++;
+			dx = dx + (2 * ry * ry);
+			dy = dy - (2 * rx * rx);
+			d2 = d2 + dx - dy + (rx * rx);
+		}
+	}
+
+}
+
+double PrimitiveRender::cross(Point2D O, Point2D A, Point2D B) {
+	return (A.getX() - O.getX()) * (B.getY() - O.getY()) - (A.getY() - O.getY()) * (B.getX() - O.getX());
+}
+
+
+void PrimitiveRender::drawPolygon(sf::RenderWindow& window, std::vector<Point2D> P) {
+	int n = P.size(), k = 0;
+	if (n <= 3) {
+		return;
+	}
+	std::vector<Point2D> H(n);
+
+	for (int i = 0; i < n; ++i) {
+		while (k >= 2 && cross(H[k - 2], H[k - 1], P[i]) <= 0) k--;
+		H[k++] = P[i];
+	}
+
+	for (int i = n - 1, t = k + 1; i > 0; --i) {
+		while (k >= t && cross(H[k - 2], H[k - 1], P[i - 1]) <= 0) k--;
+		H[k++] = P[i - 1];
+	}
+
+	for (int i = 1; i < H.size(); i++) {
+		drawLine(window, H[i - 1].getX(), H[i - 1].getY(), H[i].getX(), H[i].getY());
+	}
+}
+
+void PrimitiveRender::boundryFill(sf::RenderWindow& window, int x, int y, sf::Color fill_color, sf::Color boundry_color) {
+	sf::Vector2u windowSize = window.getSize();
+	sf::Texture texture;
+	texture.create(windowSize.x, windowSize.y);
+	texture.update(window);
+	sf::Image image = texture.copyToImage();
+
+	if ((image.getPixel(x, y) != boundry_color) && (image.getPixel(x, y) == fill_color)) {
+		drawPoint(window, x, y, fill_color);
+		boundryFill(window, x + 1, y, fill_color, boundry_color);
+		boundryFill(window, x, y + 1, fill_color, boundry_color);
+		boundryFill(window, x - 1, y, fill_color, boundry_color);
+		boundryFill(window, x, y - 1, fill_color, boundry_color);
+	}
+}
+
+void PrimitiveRender::floodFill(sf::RenderWindow& window, int x, int y, sf::Color fill_color, sf::Color background) {
+	sf::Vector2u windowSize = window.getSize();
+	sf::Texture texture;
+	texture.create(windowSize.x, windowSize.y);
+	texture.update(window);
+	sf::Image image = texture.copyToImage();
+
+	if ((image.getPixel(x, y) == background) && (image.getPixel(x, y) == fill_color)) {
+		drawPoint(window, x, y, fill_color);
+		boundryFill(window, x + 1, y, fill_color, background);
+		boundryFill(window, x, y + 1, fill_color, background);
+		boundryFill(window, x - 1, y, fill_color, background);
+		boundryFill(window, x, y - 1, fill_color, background);
 	}
 }
 
