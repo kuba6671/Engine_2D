@@ -4,7 +4,7 @@
 
 int main()
 {
-	Engine e1 = Engine(500, 500, "SFML");
+	Engine e1 = Engine(1000, 1000, "SFML");
 	try {
 		e1.init();
 	}

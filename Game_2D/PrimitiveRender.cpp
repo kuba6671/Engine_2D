@@ -1,5 +1,4 @@
 #include "PrimitiveRender.h"
-#include <iostream>
 
 
 void PrimitiveRender::drawLine(sf::RenderWindow& window, int x1, int y1, int x2, int y2) {

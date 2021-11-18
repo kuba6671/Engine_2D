@@ -1,5 +1,6 @@
 #include "Engine.h"
 #include "PrimitiveRender.h"
+#include "GameObject.h"
 
 Engine::Engine(int screenWidth, int screenHeight, std::string windowTitle) {
 	this->screenWidth = screenWidth;
@@ -45,7 +46,7 @@ int Engine::init() {
 	texture.create(window.getSize().x, window.getSize().y);
 	texture.update(window);
 	auto image = texture.copyToImage();*/
-
+	Circle c1(50,100,100);
 	while (window.isOpen())
 	{
 		window.clear(color);
@@ -66,10 +67,12 @@ int Engine::init() {
 		
 		//p1.boundryFill(window,point1,sf::Color::Blue, sf::Color::Red);
 		 
-		p1.drawPoint(window,190,225);
+		//p1.drawPoint(window,190,225);
 
-		p1.drawPolygon(window,points);
-
+		//p1.drawPolygon(window,points);
+		
+		c1.draw(window);
+		//c1.translate(window, -200, 200);
 
 		if (!square.loadFromFile("square.png")) {
 			throw EXIT_FAILURE;
@@ -90,6 +93,10 @@ int Engine::init() {
 					sprite.move(1.f, 0.f);
 				}
 			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::K)) {
+				//c1.translate(window, 50, 50);
+				c1.scale(window,3,3);
+			}
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
 				sf::Vector2f pos = sprite.getPosition();
 				if (pos.y < screenHeight - square.getSize().y) {
@@ -98,7 +105,6 @@ int Engine::init() {
 			}
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
 				sf::Vector2f pos = sprite.getPosition();
-				// std::cout << "x=" << pos.x << " y=" << pos.y <<std::endl;
 				if (pos.x > 0) {
 					sprite.move(-1.f, 0.f);
 				}
