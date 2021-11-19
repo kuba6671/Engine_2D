@@ -149,13 +149,14 @@
   <ItemGroup>
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="LineSegment.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Point2D.cpp" />
     <ClCompile Include="PrimitiveRender.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h" />
     <ClInclude Include="GameObject.h" />
-    <ClInclude Include="PrimitiveRender.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

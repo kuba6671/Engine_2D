@@ -1,7 +1,6 @@
 #include "GameObject.h"
 
 //Circle
-
 Circle::Circle(int radius, int x, int y) {
 	this->radius = radius;
 	this->x = x;
@@ -128,7 +127,7 @@ Polyline::Polyline(std::vector<LineSegment> lineVector) {
 void Polyline::draw(sf::RenderWindow& window) {
 	std::vector<LineSegment>::iterator it = lineVector.begin();
 	for (LineSegment& x : lineVector) {
-		primitive.drawLine(window, x);
+		primitive.drawLine(window,x);
 	}
 }
 
@@ -146,11 +145,11 @@ void Polyline::rotate(sf::RenderWindow& window, float angle) {
 	for (LineSegment& i : lineVector) {
 		x2 = i.getPoint1X() * cos(angle) - i.getPoint1Y() * sin(angle);
 		y2 = i.getPoint1X() * sin(angle) + i.getPoint1Y() * cos(angle);
-		i.changePoint1(i.getPoint1X() + (int)x2, i.getPoint1Y() + (int)y2);
+		i.changePoint1((int)x2, (int)y2);
 
 		x2 = i.getPoint2X() * cos(angle) - i.getPoint2Y() * sin(angle);
 		y2 = i.getPoint2X() * sin(angle) + i.getPoint2Y() * cos(angle);
-		i.changePoint2(i.getPoint2X() + (int)x2, i.getPoint2Y() + (int)y2);
+		i.changePoint2((int)x2, (int)y2);
 	}
 }
 
@@ -161,11 +160,11 @@ void Polyline::scale(sf::RenderWindow& window, int x, int y) {
 	for (LineSegment& i : lineVector) {
 		x2 = i.getPoint1X() * x;
 		y2 = i.getPoint1Y() * y;
-		i.changePoint1(i.getPoint1X() + (int)x2, i.getPoint1Y() + (int)y2);
+		i.changePoint1( (int)x2, (int)y2);
 
 		x2 = i.getPoint2X() * x;
 		y2 = i.getPoint2Y() * y;
-		i.changePoint2(i.getPoint2X() + (int)x2, i.getPoint2Y() + (int)y2);
+		i.changePoint2( (int)x2, (int)y2);
 	}
 }
 
@@ -194,16 +193,16 @@ void Ellipse::translate(sf::RenderWindow& window, int x, int y) {
 void Ellipse::rotate(sf::RenderWindow& window, float angle) {
 	float x2 = positionX * cos(angle) - positionY * sin(angle);
 	float y2 = positionX * sin(angle) + positionY * cos(angle);
-	this->positionX += (int)x2;
-	this->positionY += (int)y2;
+	this->positionX = (int)x2;
+	this->positionY = (int)y2;
 }
 
 void Ellipse::scale(sf::RenderWindow& window, int x, int y) {
 	float x2 = positionX * x;
 	float y2 = positionY * y;
 
-	this->positionX += (int)x2;
-	this->positionY += (int)y2;
+	this->positionX = (int)x2;
+	this->positionY = (int)y2;
 }
 
 Ellipse* Ellipse::clone() const {
@@ -219,6 +218,7 @@ Polygon::Polygon(std::vector<Point2D> P) {
 }
 
 void Polygon::draw(sf::RenderWindow& window) {
+
 	primitive.drawPolygon(window, P);
 }
 
@@ -235,8 +235,8 @@ void Polygon::rotate(sf::RenderWindow& window, float angle) {
 	for (int i = 0; i < n; i++) {
 		float x2 = P[i].getX() * cos(angle) - P[i].getY() * sin(angle);
 		float y2 = P[i].getX() * sin(angle) + P[i].getY() * cos(angle);
-		P[i].changeX(P[i].getX() + x2);
-		P[i].changeY(P[i].getY() + y2);
+		P[i].changeX(x2);
+		P[i].changeY(y2);
 	}
 }
 
@@ -245,8 +245,8 @@ void Polygon::scale(sf::RenderWindow& window, int x, int y) {
 	for (int i = 0; i < n; i++) {
 		float x2 = P[i].getX() * x;
 		float y2 = P[i].getY() * y;
-		P[i].changeX(P[i].getX() + x2);
-		P[i].changeY(P[i].getY() + y2);
+		P[i].changeX(x2);
+		P[i].changeY(y2);
 	}
 }
 

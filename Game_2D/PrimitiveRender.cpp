@@ -1,4 +1,5 @@
-#include "PrimitiveRender.h"
+//#include "PrimitiveRender.h"
+#include "GameObject.h"
 
 //PrimitiveRender
 void PrimitiveRender::drawLine(sf::RenderWindow& window, int x1, int y1, int x2, int y2) {
@@ -40,7 +41,14 @@ void PrimitiveRender::drawLine(sf::RenderWindow& window, Point2D point1, Point2D
 	};
 	window.draw(line2, 10, sf::Lines);
 }
-//void drawLine(sf::RenderWindow& window, Point2D point1, Point2D point2);
+void PrimitiveRender::drawLine(sf::RenderWindow& window, Point2D point1, Point2D point2, sf::Color color) {
+	sf::Vertex line2[] = {
+	sf::Vertex(sf::Vector2f(point1.getX(),point1.getY())),
+	sf::Vertex(sf::Vector2f(point2.getX(),point2.getY()))
+	};
+	line2->color = color;
+	window.draw(line2, 10, sf::Lines);
+}
 void PrimitiveRender::drawCircle(sf::RenderWindow& window, int size, int x, int y) {
 	sf::CircleShape circle(size);
 	circle.setPosition(sf::Vector2f(x, y));
@@ -293,106 +301,10 @@ void PrimitiveRender::floodFill(sf::RenderWindow& window, int x, int y, sf::Colo
 	}
 }
 
-//Point2D
-Point2D::Point2D(int x, int y) {
-	this->x = x;
-	this->y = y;
-}
-Point2D::Point2D() {
-	x = y = 0;
-}
-int Point2D::getX() {
-	return this->x;
-}
-int Point2D::getY() {
-	return this->y;
-}
-void Point2D::changeX(int x) {
-	this->x = x;
-}
-void Point2D::changeY(int y) {
-	this->y = y;
-}
-/*
-void Point2D::draw(sf::RenderWindow& window) {
-	//primitive.drawPoint(window,x,y);
+PrimitiveRender* PrimitiveRender::clone() const {
+	return new PrimitiveRender(*this);
 }
 
-void Point2D::draw(sf::RenderWindow& window, sf::Color color) {
-	//primitive.drawPoint(window, x, y,color);
-}
 
-void Point2D::translate(sf::RenderWindow& window, int x, int y) {
-	this->x += x;
-	this->y += y;
-}
-
-void Point2D::rotate(sf::RenderWindow& window, float angle) {
-	float x2 = x * cos(angle) - y * sin(angle);
-	float y2 = x * sin(angle) + y * cos(angle);
-	this->x += (int)x2;
-	this->y += (int)y2;
-}
-
-void Point2D::scale(sf::RenderWindow& window, int x, int y) {
-	float x2 = this->x * x;
-	float y2 = this->y * y;
-
-	this->x += (int)x2;
-	this->y += (int)y2;
-}
-
-Point2D* Point2D::clone() const {
-	return new Point2D(*this);
-}*/
-
-
-//LineSegment
-LineSegment::LineSegment() {
-	point1.changeX(0);
-	point1.changeY(0);
-	point2.changeX(0);
-	point2.changeY(0);
-}
-LineSegment::LineSegment(Point2D point1, Point2D point2) {
-	this->point1.changeX(point1.getX());
-	this->point1.changeY(point1.getY());
-	this->point2.changeX(point2.getX());
-	this->point2.changeY(point2.getY());
-}
-LineSegment::LineSegment(int x1, int y1, int x2, int y2) {
-	this->point1.changeX(x1);
-	this->point1.changeY(y1);
-	this->point2.changeX(x2);
-	this->point2.changeY(y2);
-}
-void LineSegment::changePoint1(Point2D point1) {
-	this->point1.changeX(point1.getX());
-	this->point1.changeY(point1.getY());
-}
-void LineSegment::changePoint2(Point2D point2) {
-	this->point2.changeX(point2.getX());
-	this->point2.changeY(point2.getY());
-}
-void LineSegment::changePoint1(int x1, int y1) {
-	this->point1.changeX(x1);
-	this->point1.changeY(y1);
-}
-void LineSegment::changePoint2(int x2, int y2) {
-	this->point2.changeX(x2);
-	this->point2.changeY(y2);
-}
-int LineSegment::getPoint1X() {
-	return point1.getX();
-}
-int LineSegment::getPoint1Y() {
-	return point1.getY();
-}
-int LineSegment::getPoint2X() {
-	return point2.getX();
-}
-int LineSegment::getPoint2Y() {
-	return point2.getY();
-}
 
 
