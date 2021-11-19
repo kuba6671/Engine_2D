@@ -273,3 +273,43 @@ void UpdatableBitmap::setPosition(sf::RenderWindow& window, int x, int y) {
 void UpdatableBitmap::move(sf::RenderWindow window, int x, int y) {
 	sprite.move(x, y);
 }
+
+
+//BitmpaObject
+void BitmapObject::draw(sf::RenderWindow& window) {
+	window.draw(sprite);
+}
+
+/*bool deleteSprite = false;
+
+if (!deleteSprite) {
+     window.draw(YOUR SPRITE);
+}*/
+
+void BitmapObject::deleteBitmap() {
+	deleteSprite = true;
+}
+
+void BitmapObject::loadFromFile(std::string bitmapPath) {
+	if (!texture.loadFromFile(bitmapPath)) {
+		throw EXIT_FAILURE;
+	}
+	sprite.setTexture(texture);
+	deleteSprite = false;
+}
+
+void BitmapObject::saveToFile(std::string fileName) {
+	texture.copyToImage().saveToFile(fileName);
+}
+
+BitmapObject* BitmapObject::clone() const {
+	return new BitmapObject(*this);
+}
+
+bool BitmapObject::getDeleteBitmap() {
+	return deleteSprite;
+}
+
+void BitmapObject::setBitmapPosition(int x, int y) {
+	sprite.setPosition(x,y);
+}

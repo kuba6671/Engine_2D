@@ -18,6 +18,11 @@ public:
 	virtual GameObject* clone() const = 0;
 };
 
+class AnimatedObject : public GameObject {
+public:
+	virtual void animate() = 0;
+};
+
 
 class UpdatableObject : public GameObject {
 protected:
@@ -40,6 +45,37 @@ public:
 class DrawableObject : public virtual GameObject {
 public:
 	virtual void draw(sf::RenderWindow& window) = 0;
+};
+
+class BitmapHandler : public virtual GameObject {
+protected:
+	sf::Texture texture;
+	sf::Sprite sprite;
+	bool deleteSprite;
+public:
+	BitmapHandler(std::string bitmapPath) {
+		if (!texture.loadFromFile(bitmapPath)) {
+			throw EXIT_FAILURE;
+		}
+		sprite.setTexture(texture);
+		deleteSprite = false;
+	}
+	virtual void deleteBitmap() = 0;
+	virtual void loadFromFile(std::string bitmapPath) = 0;
+	virtual void saveToFile(std::string fileName) = 0;
+};
+
+class BitmapObject : public DrawableObject, BitmapHandler {
+public:
+	BitmapObject(std::string bitmapPath) : BitmapHandler(bitmapPath) {}
+	BitmapObject(std::string bitmapPath, int x, int y) : BitmapHandler(bitmapPath) { setBitmapPosition(x, y); }
+	void draw(sf::RenderWindow& window);
+	virtual void deleteBitmap();
+	virtual void loadFromFile(std::string bitmapPath);
+	virtual void saveToFile(std::string fileName);
+	virtual BitmapObject* clone() const override;
+	bool getDeleteBitmap();
+	void setBitmapPosition(int x, int y);
 };
 
 class TransformableObject : public virtual GameObject {

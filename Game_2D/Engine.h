@@ -13,10 +13,8 @@ private:
 	std::string windowTitle;
 	sf::Clock clock;
 	sf::Keyboard keyboard;
-	sf::Texture square;
-	sf::Sprite sprite;
-	sf::Color color;
 	sf::Mouse mouse;
+	sf::Color color;
 	void paintScreen(sf::Color color);
 public:
 	Engine(int screenWidth, int screenHeight, std::string windowTitle);
