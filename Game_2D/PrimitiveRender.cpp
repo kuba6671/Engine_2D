@@ -1,6 +1,6 @@
 #include "PrimitiveRender.h"
 
-
+//PrimitiveRender
 void PrimitiveRender::drawLine(sf::RenderWindow& window, int x1, int y1, int x2, int y2) {
 	sf::Vertex line2[] = {
 		sf::Vertex(sf::Vector2f(x1,y1)),
@@ -33,6 +33,14 @@ void PrimitiveRender::drawLine(sf::RenderWindow& window, LineSegment line, sf::C
 	line2->color = color;
 	window.draw(line2, 10, sf::Lines);
 }
+void PrimitiveRender::drawLine(sf::RenderWindow& window, Point2D point1, Point2D point2) {
+	sf::Vertex line2[] = {
+	sf::Vertex(sf::Vector2f(point1.getX(),point1.getY())),
+	sf::Vertex(sf::Vector2f(point2.getX(),point2.getY()))
+	};
+	window.draw(line2, 10, sf::Lines);
+}
+//void drawLine(sf::RenderWindow& window, Point2D point1, Point2D point2);
 void PrimitiveRender::drawCircle(sf::RenderWindow& window, int size, int x, int y) {
 	sf::CircleShape circle(size);
 	circle.setPosition(sf::Vector2f(x, y));
@@ -285,7 +293,7 @@ void PrimitiveRender::floodFill(sf::RenderWindow& window, int x, int y, sf::Colo
 	}
 }
 
-
+//Point2D
 Point2D::Point2D(int x, int y) {
 	this->x = x;
 	this->y = y;
@@ -305,8 +313,41 @@ void Point2D::changeX(int x) {
 void Point2D::changeY(int y) {
 	this->y = y;
 }
+/*
+void Point2D::draw(sf::RenderWindow& window) {
+	//primitive.drawPoint(window,x,y);
+}
+
+void Point2D::draw(sf::RenderWindow& window, sf::Color color) {
+	//primitive.drawPoint(window, x, y,color);
+}
+
+void Point2D::translate(sf::RenderWindow& window, int x, int y) {
+	this->x += x;
+	this->y += y;
+}
+
+void Point2D::rotate(sf::RenderWindow& window, float angle) {
+	float x2 = x * cos(angle) - y * sin(angle);
+	float y2 = x * sin(angle) + y * cos(angle);
+	this->x += (int)x2;
+	this->y += (int)y2;
+}
+
+void Point2D::scale(sf::RenderWindow& window, int x, int y) {
+	float x2 = this->x * x;
+	float y2 = this->y * y;
+
+	this->x += (int)x2;
+	this->y += (int)y2;
+}
+
+Point2D* Point2D::clone() const {
+	return new Point2D(*this);
+}*/
 
 
+//LineSegment
 LineSegment::LineSegment() {
 	point1.changeX(0);
 	point1.changeY(0);
@@ -353,4 +394,5 @@ int LineSegment::getPoint2X() {
 int LineSegment::getPoint2Y() {
 	return point2.getY();
 }
+
 

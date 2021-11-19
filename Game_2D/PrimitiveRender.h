@@ -19,7 +19,14 @@ public:
 	int getY();
 	void changeX(int x);
 	void changeY(int y);
+	//void draw(sf::RenderWindow& window);
+	//void draw(sf::RenderWindow& window, sf::Color color);
+	//void translate(sf::RenderWindow& window, int x, int y);
+	//void rotate(sf::RenderWindow& window, float angle);
+	//void scale(sf::RenderWindow& window, int x, int y);
+	//virtual Point2D* clone() const override;
 };
+
 
 
 class LineSegment {
@@ -36,7 +43,12 @@ public:
 	int getPoint1Y();
 	int getPoint2X();
 	int getPoint2Y();
-};	
+	//void draw(sf::RenderWindow& window);
+	//void translate(sf::RenderWindow& window, int x, int y);
+	//void rotate(sf::RenderWindow& window, float angle);
+	//void scale(sf::RenderWindow& window, int x, int y);
+	//virtual LineSegment* clone() const override;
+};
 
 
 
@@ -47,6 +59,7 @@ public:
 	void drawLine(sf::RenderWindow& window, int x1, int y1, int x2, int y2, sf::Color color);
 	void drawLine(sf::RenderWindow& window, LineSegment line);
 	void drawLine(sf::RenderWindow& window, LineSegment line, sf::Color color);
+	void drawLine(sf::RenderWindow& window, Point2D point1, Point2D point2);
 	void drawCircle(sf::RenderWindow& window, int radius, int x, int y);
 	void drawCircle(sf::RenderWindow& window, int radius, int x, int y, sf::Color color);
 	void drawRectangle(sf::RenderWindow& window, int sizeX, int sizeY, int x, int y);

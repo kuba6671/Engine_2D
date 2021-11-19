@@ -6,15 +6,25 @@
 class GameObject
 {
 public:
-	//virtual void loadTexture() = 0;
+	virtual GameObject* clone() const = 0;
 };
 
 class UpdatableObject : public GameObject {
 protected:
-	sf::Texture square;
+	sf::Texture texture;
 	sf::Sprite sprite;
 public:
-	virtual void update(sf::RenderWindow& window) = 0;
+	virtual void update(sf::RenderWindow& window, sf::Texture texture) = 0;
+	virtual void setPosition(sf::RenderWindow window, int x, int y) = 0;
+	virtual void move(sf::RenderWindow window, int x, int y) = 0;
+};
+
+class UpdatableBitmap : public UpdatableObject {
+public:
+	UpdatableBitmap(std::string bitmapPath);
+	void update(sf::RenderWindow& window, sf::Texture texture);
+	void setPosition(sf::RenderWindow& window, int x, int y);
+	void move(sf::RenderWindow window, int x, int y);
 };
 
 class DrawableObject : public virtual GameObject {
@@ -37,93 +47,78 @@ protected:
 	PrimitiveRender primitive;
 };
 
-class Circle : public virtual ShapeObject {
+class Circle : public ShapeObject {
 	sf::CircleShape circle;
 	int radius, x, y;
 public:
-	Circle(int radius, int x, int y) {
-		this->radius = radius;
-		this->x = x;
-		this->y = y;
-	}
+	Circle(int radius, int x, int y);
 	void draw(sf::RenderWindow& window);
 	void draw(sf::RenderWindow& window, sf::Color color);
 	void translate(sf::RenderWindow& window, int x, int y);
 	void rotate(sf::RenderWindow& window, float angle);
 	void scale(sf::RenderWindow& window, int x, int y);
+	virtual Circle* clone() const override;
+
 };
 
 class Rectangle : public ShapeObject {
 	sf::RectangleShape rectangle;
 	int sizeX, sizeY, x, y;
 public:
-	Rectangle(int sizeX, int sizeY, int x, int y) {
-		this->sizeX = sizeX;
-		this->sizeY = sizeY;
-		this->x = x;
-		this->y = y;
-	}
+	Rectangle(int sizeX, int sizeY, int x, int y);
 	void draw(sf::RenderWindow& window);
 	void draw(sf::RenderWindow& window, sf::Color color);
 	void translate(sf::RenderWindow& window, int x, int y);
 	void rotate(sf::RenderWindow& window, float angle);
 	void scale(sf::RenderWindow& window, int x, int y);
+	virtual Rectangle* clone() const override;
 };
 
 class Triangle : public ShapeObject {
 	int size, x, y;
 	sf::CircleShape triangle;
 public:
-	Triangle(int size, int x, int y) {
-		this->size = size;
-		this->x = x;
-		this->y = y;
-	}
+	Triangle(int size, int x, int y);
 	void draw(sf::RenderWindow& window);
 	void draw(sf::RenderWindow& window, sf::Color color);
 	void translate(sf::RenderWindow& window, int x, int y);
 	void rotate(sf::RenderWindow& window, float angle);
 	void scale(sf::RenderWindow& window, int x, int y);
+	virtual Triangle* clone() const override;
 };
 
 class Polyline : public ShapeObject {
 	std::vector<LineSegment> lineVector;
 public:
-	Polyline(std::vector<LineSegment> lineVector) {
-		this->lineVector = lineVector;
-	}
+	Polyline(std::vector<LineSegment> lineVector);
 	void draw(sf::RenderWindow& window);
 	void translate(sf::RenderWindow& window, int x, int y);
 	void rotate(sf::RenderWindow& window, float angle);
 	void scale(sf::RenderWindow& window, int x, int y);
+	virtual Polyline* clone() const override;
 };
 
 class Ellipse : public ShapeObject {
 	int rx, ry, positionX, positionY;
 	sf::Color color;
 public:
-	Ellipse(int rx, int  ry, int positionX, int positionY, sf::Color color) {
-		this->rx = rx;
-		this->ry = ry;
-		this->positionX = positionX;
-		this->positionY = positionY;
-		this->color = color;
-	}
+	Ellipse(int rx, int  ry, int positionX, int positionY, sf::Color color);
 	void draw(sf::RenderWindow& window);
 	void translate(sf::RenderWindow& window, int x, int y);
 	void rotate(sf::RenderWindow& window, float angle);
 	void scale(sf::RenderWindow& window, int x, int y);
+	virtual Ellipse* clone() const override;
 };
 
 class Polygon : public ShapeObject {
 	std::vector<Point2D> P;
 public:
-	Polygon(std::vector<Point2D> P) {
-		this->P = P;
-	}
+	Polygon(std::vector<Point2D> P);
 	void draw(sf::RenderWindow& window);
 	void translate(sf::RenderWindow& window, int x, int y);
 	void rotate(sf::RenderWindow& window, float angle);
 	void scale(sf::RenderWindow& window, int x, int y);
+	virtual Polygon* clone() const override;
 };
+
 

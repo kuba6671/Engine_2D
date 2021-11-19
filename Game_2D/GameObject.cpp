@@ -1,6 +1,13 @@
 #include "GameObject.h"
 
 //Circle
+
+Circle::Circle(int radius, int x, int y) {
+	this->radius = radius;
+	this->x = x;
+	this->y = y;
+}
+
 void Circle::draw(sf::RenderWindow& window) {
 	circle.setRadius(radius);
 	circle.setPosition(sf::Vector2f(x, y));
@@ -28,8 +35,20 @@ void Circle::scale(sf::RenderWindow& window, int x, int y) {
 	circle.setScale(sf::Vector2f(x, y));
 }
 
+Circle* Circle::clone() const {
+	return new Circle(*this);
+}
+
+
 
 //Rectangle
+Rectangle::Rectangle(int sizeX, int sizeY, int x, int y) {
+	this->sizeX = sizeX;
+	this->sizeY = sizeY;
+	this->x = x;
+	this->y = y;
+}
+
 void Rectangle::draw(sf::RenderWindow& window) {
 	rectangle.setSize(sf::Vector2f(sizeX, sizeY));
 	rectangle.setPosition(sf::Vector2f(x, y));
@@ -56,8 +75,18 @@ void Rectangle::scale(sf::RenderWindow& window, int x, int y) {
 	rectangle.setScale(sf::Vector2f(x, y));
 }
 
+Rectangle* Rectangle::clone() const {
+	return new Rectangle(*this);
+}
+
 
 //Triangle
+Triangle::Triangle(int size, int x, int y) {
+	this->size = size;
+	this->x = x;
+	this->y = y;
+}
+
 void Triangle::draw(sf::RenderWindow& window) {
 	triangle.setPointCount(3);
 	triangle.setRadius(size);
@@ -86,8 +115,16 @@ void Triangle::scale(sf::RenderWindow& window, int x, int y) {
 	triangle.setScale(sf::Vector2f(x, y));
 }
 
+Triangle* Triangle::clone() const {
+	return new Triangle(*this);
+}
+
 
 //Polyline
+Polyline::Polyline(std::vector<LineSegment> lineVector) {
+	this->lineVector = lineVector;
+}
+
 void Polyline::draw(sf::RenderWindow& window) {
 	std::vector<LineSegment>::iterator it = lineVector.begin();
 	for (LineSegment& x : lineVector) {
@@ -117,6 +154,7 @@ void Polyline::rotate(sf::RenderWindow& window, float angle) {
 	}
 }
 
+
 void Polyline::scale(sf::RenderWindow& window, int x, int y) {
 	std::vector<LineSegment>::iterator it = lineVector.begin();
 	float x2, y2;
@@ -131,7 +169,19 @@ void Polyline::scale(sf::RenderWindow& window, int x, int y) {
 	}
 }
 
+Polyline* Polyline::clone() const {
+	return new Polyline(*this);
+}
+
 //Ellipse
+Ellipse::Ellipse(int rx, int  ry, int positionX, int positionY, sf::Color color) {
+	this->rx = rx;
+	this->ry = ry;
+	this->positionX = positionX;
+	this->positionY = positionY;
+	this->color = color;
+}
+
 void Ellipse::draw(sf::RenderWindow& window) {
 	primitive.drawEllipseSym4(window, rx, ry, positionX, positionY, color);
 }
@@ -156,9 +206,18 @@ void Ellipse::scale(sf::RenderWindow& window, int x, int y) {
 	this->positionY += (int)y2;
 }
 
+Ellipse* Ellipse::clone() const {
+	return new Ellipse(*this);
+}
+
+
 
 
 //Polygon
+Polygon::Polygon(std::vector<Point2D> P) {
+	this->P = P;
+}
+
 void Polygon::draw(sf::RenderWindow& window) {
 	primitive.drawPolygon(window, P);
 }
@@ -191,3 +250,26 @@ void Polygon::scale(sf::RenderWindow& window, int x, int y) {
 	}
 }
 
+Polygon* Polygon::clone() const {
+	return new Polygon(*this);
+}
+
+// UpdatableBitmap
+UpdatableBitmap::UpdatableBitmap(std::string bitmapPath) {
+	if (!texture.loadFromFile(bitmapPath)) {
+		throw EXIT_FAILURE;
+	}
+	sprite.setTexture(texture);
+}
+
+void UpdatableBitmap::update(sf::RenderWindow& window, sf::Texture texture) {
+	sprite.setTexture(texture);
+}
+
+void UpdatableBitmap::setPosition(sf::RenderWindow& window, int x, int y) {
+	sprite.setPosition(x, y);
+}
+
+void UpdatableBitmap::move(sf::RenderWindow window, int x, int y) {
+	sprite.move(x, y);
+}

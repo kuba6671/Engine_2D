@@ -42,11 +42,10 @@ int Engine::init() {
 	points.push_back(point5);
 	points.push_back(point6);
 
-	/*sf::Texture texture;
-	texture.create(window.getSize().x, window.getSize().y);
-	texture.update(window);
-	auto image = texture.copyToImage();*/
-	Circle c1(50,100,100);
+	Circle c1(50, 100, 100);
+	Circle c2 = *c1.clone();
+	c2.draw(window);
+
 	while (window.isOpen())
 	{
 		window.clear(color);
@@ -64,16 +63,16 @@ int Engine::init() {
 		p1.drawPolyline(window,lines);*/
 		//p1.drawCircleSym8(window, 200, 200, 50, sf::Color::Blue);
 		//p1.drawEllipseSym4(window, 50,150,150,150, sf::Color::Red);
-		
-		//p1.boundryFill(window,point1,sf::Color::Blue, sf::Color::Red);
-		 
+
+		//p1.boundryFill(window,point1,sf::Color::Blue, sf::Color::White);
+
 		//p1.drawPoint(window,190,225);
 
-		//p1.drawPolygon(window,points);
-		
+		p1.drawPolygon(window, points);
+
 		c1.draw(window);
 		//c1.translate(window, -200, 200);
-
+		c2.draw(window);
 		if (!square.loadFromFile("square.png")) {
 			throw EXIT_FAILURE;
 			//return EXIT_FAILURE;
@@ -95,7 +94,8 @@ int Engine::init() {
 			}
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::K)) {
 				//c1.translate(window, 50, 50);
-				c1.scale(window,3,3);
+				//c1.scale(window,3,3);
+				c2.scale(window, 3, 3);
 			}
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
 				sf::Vector2f pos = sprite.getPosition();
