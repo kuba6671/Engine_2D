@@ -271,12 +271,13 @@ void PrimitiveRender::drawPolygon(sf::RenderWindow& window, std::vector<Point2D>
 
 void PrimitiveRender::boundryFill(sf::RenderWindow& window, int x, int y, sf::Color fill_color, sf::Color boundry_color) {
 	sf::Vector2u windowSize = window.getSize();
-	sf::Texture texture;
-	texture.create(windowSize.x, windowSize.y);
-	texture.update(window);
-	sf::Image image = texture.copyToImage();
-
-	if ((image.getPixel(x, y) != boundry_color) && (image.getPixel(x, y) == fill_color)) {
+	sf::Texture textureBitmap;
+	textureBitmap.create(windowSize.x, windowSize.y);
+	textureBitmap.update(window);
+	sf::Image image = textureBitmap.copyToImage();
+	if((image.getPixel(x, y) == fill_color))
+		return;
+	else if (image.getPixel(x, y) != boundry_color) {
 		drawPoint(window, x, y, fill_color);
 		boundryFill(window, x + 1, y, fill_color, boundry_color);
 		boundryFill(window, x, y + 1, fill_color, boundry_color);
@@ -287,10 +288,10 @@ void PrimitiveRender::boundryFill(sf::RenderWindow& window, int x, int y, sf::Co
 
 void PrimitiveRender::floodFill(sf::RenderWindow& window, int x, int y, sf::Color fill_color, sf::Color background) {
 	sf::Vector2u windowSize = window.getSize();
-	sf::Texture texture;
-	texture.create(windowSize.x, windowSize.y);
-	texture.update(window);
-	sf::Image image = texture.copyToImage();
+	sf::Texture textureBitmap;
+	textureBitmap.create(windowSize.x, windowSize.y);
+	textureBitmap.update(window);
+	sf::Image image = textureBitmap.copyToImage();
 
 	if ((image.getPixel(x, y) == background) && (image.getPixel(x, y) == fill_color)) {
 		drawPoint(window, x, y, fill_color);

@@ -5,37 +5,47 @@ Engine::Engine(int screenWidth, int screenHeight, std::string windowTitle) {
 	this->screenWidth = screenWidth;
 	this->screenHeight = screenHeight;
 	this->windowTitle = windowTitle;
-	color = sf::Color::Black;
+	color = sf::Color(150, 150, 150);
 }
 Engine::Engine(int screenWidth, int screenHeight) {
 	this->screenWidth = screenWidth;
 	this->screenHeight = screenHeight;
-	color = sf::Color::Black;
+	color = sf::Color(150, 150, 150);
 }
 int Engine::init() {
 	sf::RenderWindow window(sf::VideoMode(screenWidth, screenHeight), "SFML");
 	PrimitiveRender p1;
-	BitmapObject bitmap1("square.png",300,300);
+	sf::Event event;
+
+	sf::Texture playerTexture;
+	playerTexture.loadFromFile("dragon.png");
+
+	Player player(&playerTexture, sf::Vector2u(3,4), 0.1f, 100.0f);
+
+	float deltaTime = 0.0f;
 
 	while (window.isOpen())
 	{
-		window.clear(color);
-		sf::Time time = clock.restart();
-		float frameTime = time.asSeconds();
-		sf::Event event;
-
+		deltaTime = clock.restart().asSeconds();
 
 		while (window.pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed)
 				window.close();
-			if (!bitmap1.getDeleteBitmap()) {
+			//if (mouse.isButtonPressed(sf::Mouse::Left)) {
+			//	sf::Vector2i pos = mouse.getPosition(window);
+			//	p1.boundryFill(window,pos.x,pos.y,sf::Color::Red,sf::Color::Blue);
+			//}
+			/*if (!bitmap1.getBitmapState()) {
 				bitmap1.draw(window);
-			}
-			if (sf::Event::KeyReleased) {
+			}*/
+			//animation.addFrame({ sf::IntRect(0,0,100,100), 0.1 });
+			//window.draw(myCharacter);
+			//window.draw(myCharacter);
+			/*if (sf::Event::KeyReleased) {
 				clock.restart();
-			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+			}*/
+			/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
 				bitmap1.saveToFile("zapisane.png");
 			}
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) {
@@ -47,6 +57,9 @@ int Engine::init() {
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
 				bitmap1.setBitmapPosition(500,500);
 			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+				//animation.update(elapsed.asMicroseconds());
+			}*/
 			/*else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
 				sf::Vector2f pos = sprite.getPosition();
 				if (pos.y < screenHeight - square.getSize().y) {
@@ -78,9 +91,11 @@ int Engine::init() {
 				}
 			}
 		}*/
-		//sf::Time elapsed = clock.getElapsedTime();
-			window.display();
 		}
+		player.update(deltaTime);
+		window.clear(color);
+		player.draw(window);
+		window.display();
 	}
 	return 0;
 }

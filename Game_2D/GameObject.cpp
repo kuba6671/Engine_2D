@@ -127,7 +127,7 @@ Polyline::Polyline(std::vector<LineSegment> lineVector) {
 void Polyline::draw(sf::RenderWindow& window) {
 	std::vector<LineSegment>::iterator it = lineVector.begin();
 	for (LineSegment& x : lineVector) {
-		primitive.drawLine(window,x);
+		primitive.drawLine(window, x);
 	}
 }
 
@@ -160,11 +160,11 @@ void Polyline::scale(sf::RenderWindow& window, int x, int y) {
 	for (LineSegment& i : lineVector) {
 		x2 = i.getPoint1X() * x;
 		y2 = i.getPoint1Y() * y;
-		i.changePoint1( (int)x2, (int)y2);
+		i.changePoint1((int)x2, (int)y2);
 
 		x2 = i.getPoint2X() * x;
 		y2 = i.getPoint2Y() * y;
-		i.changePoint2( (int)x2, (int)y2);
+		i.changePoint2((int)x2, (int)y2);
 	}
 }
 
@@ -256,14 +256,14 @@ Polygon* Polygon::clone() const {
 
 // UpdatableBitmap
 UpdatableBitmap::UpdatableBitmap(std::string bitmapPath) {
-	if (!texture.loadFromFile(bitmapPath)) {
+	if (!textureBitmap.loadFromFile(bitmapPath)) {
 		throw EXIT_FAILURE;
 	}
-	sprite.setTexture(texture);
+	sprite.setTexture(textureBitmap);
 }
 
-void UpdatableBitmap::update(sf::RenderWindow& window, sf::Texture texture) {
-	sprite.setTexture(texture);
+void UpdatableBitmap::update(sf::RenderWindow& window, sf::Texture textureBitmap) {
+	sprite.setTexture(textureBitmap);
 }
 
 void UpdatableBitmap::setPosition(sf::RenderWindow& window, int x, int y) {
@@ -277,39 +277,130 @@ void UpdatableBitmap::move(sf::RenderWindow window, int x, int y) {
 
 //BitmpaObject
 void BitmapObject::draw(sf::RenderWindow& window) {
-	window.draw(sprite);
+	if (!deleteSprite)
+		window.draw(sprite);
 }
-
-/*bool deleteSprite = false;
-
-if (!deleteSprite) {
-     window.draw(YOUR SPRITE);
-}*/
 
 void BitmapObject::deleteBitmap() {
 	deleteSprite = true;
 }
 
 void BitmapObject::loadFromFile(std::string bitmapPath) {
-	if (!texture.loadFromFile(bitmapPath)) {
+	if (!textureBitmap.loadFromFile(bitmapPath)) {
 		throw EXIT_FAILURE;
 	}
-	sprite.setTexture(texture);
+	sprite.setTexture(textureBitmap);
 	deleteSprite = false;
 }
 
 void BitmapObject::saveToFile(std::string fileName) {
-	texture.copyToImage().saveToFile(fileName);
+	textureBitmap.copyToImage().saveToFile(fileName);
 }
 
 BitmapObject* BitmapObject::clone() const {
 	return new BitmapObject(*this);
 }
 
-bool BitmapObject::getDeleteBitmap() {
+bool BitmapObject::getBitmapState() {
 	return deleteSprite;
 }
 
 void BitmapObject::setBitmapPosition(int x, int y) {
-	sprite.setPosition(x,y);
+	sprite.setPosition(x, y);
+}
+
+sf::Sprite BitmapObject::getSprite() {
+	return sprite;
+}
+
+SpriteObject::SpriteObject(sf::Texture* texture, sf::Vector2u imageCount, float switchTime) {
+	this->imageCount = imageCount;
+	this->switchTime = switchTime;
+	totalTime = 0.0f;
+	currentImage.x = 0;
+
+	uvRect.width = texture->getSize().x / float(imageCount.x);
+	uvRect.height = texture->getSize().y / float(imageCount.y);
+}
+
+void SpriteObject::update(int row, float deltaTime, bool faceRight)
+{
+	currentImage.y = row;
+	totalTime += deltaTime;
+
+	if (totalTime >= switchTime) {
+		totalTime -= switchTime;
+		currentImage.x++;
+
+		if (currentImage.x >= imageCount.x) {
+			currentImage.x = 0;
+		}
+	}
+
+
+	uvRect.top = currentImage.y * uvRect.height;
+
+	if (faceRight) {
+		uvRect.left = currentImage.x * uvRect.width;
+		uvRect.width = abs(uvRect.width);
+	}
+	else{
+		uvRect.left = (currentImage.x + 1) * abs(uvRect.width);
+		uvRect.width = -abs(uvRect.width);
+	}
+}
+
+Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, float speed)
+	: anim(texture, imageCount, switchTime)
+{
+	this->speed = speed;
+	row = 0;
+	faceRight = true;
+	bool upDown = true;
+	body.setSize(sf::Vector2f(100.0f, 150.0f));
+	body.setPosition(206.0f, 206.0f);
+	body.setTexture(texture);
+}
+
+void Player::update(float deltaTime)
+{
+	sf::Vector2f movement(0.0f, 0.0f);
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+		movement.x -= speed * deltaTime;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+		movement.x += speed * deltaTime;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+		movement.y -= speed * deltaTime;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+		movement.y += speed * deltaTime;
+	}
+
+	if (movement.x == 0.0f) {
+		row = 0;
+	}
+	else {
+		row = 1;
+
+		if (movement.x > 0.0f) {
+			faceRight = false;
+		}
+		else {
+			faceRight = true;
+		}
+	}
+
+	
+
+	anim.update(row, deltaTime, faceRight);
+	body.setTextureRect(anim.uvRect);
+	body.move(movement);
+}
+
+void Player::draw(sf::RenderWindow& window)
+{
+	window.draw(body);
 }

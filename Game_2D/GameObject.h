@@ -12,24 +12,30 @@
 class Point2D;
 class LineSegment;
 
+
+struct Frame {
+	sf::IntRect rect;
+	double duration; // in seconds
+};
+
 class GameObject
 {
 public:
 	virtual GameObject* clone() const = 0;
 };
 
-class AnimatedObject : public GameObject {
+class AnimatedObject : virtual public GameObject {
 public:
-	virtual void animate() = 0;
+	virtual void animate(sf::RenderWindow& window) = 0;
 };
 
 
 class UpdatableObject : public GameObject {
 protected:
-	sf::Texture texture;
+	sf::Texture textureBitmap;
 	sf::Sprite sprite;
 public:
-	virtual void update(sf::RenderWindow& window, sf::Texture texture) = 0;
+	virtual void update(sf::RenderWindow& window, sf::Texture textureBitmap) = 0;
 	virtual void setPosition(sf::RenderWindow window, int x, int y) = 0;
 	virtual void move(sf::RenderWindow window, int x, int y) = 0;
 };
@@ -37,7 +43,7 @@ public:
 class UpdatableBitmap : public UpdatableObject {
 public:
 	UpdatableBitmap(std::string bitmapPath);
-	void update(sf::RenderWindow& window, sf::Texture texture);
+	void update(sf::RenderWindow& window, sf::Texture textureBitmap);
 	void setPosition(sf::RenderWindow& window, int x, int y);
 	void move(sf::RenderWindow window, int x, int y);
 };
@@ -48,34 +54,75 @@ public:
 };
 
 class BitmapHandler : public virtual GameObject {
-protected:
-	sf::Texture texture;
-	sf::Sprite sprite;
-	bool deleteSprite;
 public:
-	BitmapHandler(std::string bitmapPath) {
-		if (!texture.loadFromFile(bitmapPath)) {
-			throw EXIT_FAILURE;
-		}
-		sprite.setTexture(texture);
-		deleteSprite = false;
-	}
 	virtual void deleteBitmap() = 0;
 	virtual void loadFromFile(std::string bitmapPath) = 0;
 	virtual void saveToFile(std::string fileName) = 0;
 };
 
-class BitmapObject : public DrawableObject, BitmapHandler {
+class BitmapObject : public virtual DrawableObject, BitmapHandler {
+protected:
+	sf::Texture textureBitmap;
+	sf::Sprite sprite;
+	bool deleteSprite;
 public:
-	BitmapObject(std::string bitmapPath) : BitmapHandler(bitmapPath) {}
-	BitmapObject(std::string bitmapPath, int x, int y) : BitmapHandler(bitmapPath) { setBitmapPosition(x, y); }
+	BitmapObject() { deleteSprite = false; };
+	BitmapObject(std::string bitmapPath) {
+		if (!textureBitmap.loadFromFile(bitmapPath)) {
+			throw EXIT_FAILURE;
+		}
+		sprite.setTexture(textureBitmap);
+		deleteSprite = false;
+	}
+	BitmapObject(std::string bitmapPath, int x, int y) {
+		if (!textureBitmap.loadFromFile(bitmapPath)) {
+			throw EXIT_FAILURE;
+		}
+		sprite.setTexture(textureBitmap);
+		setBitmapPosition(x, y);
+		deleteSprite = false;
+	}
 	void draw(sf::RenderWindow& window);
 	virtual void deleteBitmap();
 	virtual void loadFromFile(std::string bitmapPath);
 	virtual void saveToFile(std::string fileName);
 	virtual BitmapObject* clone() const override;
-	bool getDeleteBitmap();
+	sf::Sprite getSprite();
+	bool getBitmapState();
 	void setBitmapPosition(int x, int y);
+};
+
+//class SpriteObject : public BitmapObject, AnimatedObject {
+class SpriteObject {
+public:
+	SpriteObject(sf::Texture* texture, sf::Vector2u imageCount, float switchTime);
+
+	void update(int row, float deltaTime, bool faceRight);
+public:
+	sf::IntRect uvRect;
+	//void animate(sf::RenderWindow& window) {
+	//	int x = 0;
+	//}
+private:
+	sf::Vector2u imageCount;
+	sf::Vector2u currentImage;
+
+	float totalTime;
+	float switchTime;
+};
+
+class Player {
+public:
+	Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, float speed);
+	void update(float deltaTime);
+	void draw(sf::RenderWindow& window);
+private:
+	sf::RectangleShape body;
+	SpriteObject anim;
+	unsigned int row;
+	float speed;
+	bool faceRight;
+	bool upDown;
 };
 
 class TransformableObject : public virtual GameObject {
