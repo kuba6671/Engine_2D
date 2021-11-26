@@ -274,8 +274,26 @@ void UpdatableBitmap::move(sf::RenderWindow window, int x, int y) {
 	sprite.move(x, y);
 }
 
-
 //BitmpaObject
+BitmapObject::BitmapObject(std::string bitmapPath)
+{
+	if (!textureBitmap.loadFromFile(bitmapPath)) {
+				throw EXIT_FAILURE;
+			}
+			sprite.setTexture(textureBitmap);
+			deleteSprite = false;
+}
+
+BitmapObject::BitmapObject(std::string bitmapPath, int x, int y)
+{
+	if (!textureBitmap.loadFromFile(bitmapPath)) {
+				throw EXIT_FAILURE;
+			}
+			sprite.setTexture(textureBitmap);
+			setBitmapPosition(x, y);
+			deleteSprite = false;
+}
+
 void BitmapObject::draw(sf::RenderWindow& window) {
 	if (!deleteSprite)
 		window.draw(sprite);
@@ -323,7 +341,7 @@ SpriteObject::SpriteObject(sf::Texture* texture, sf::Vector2u imageCount, float 
 	uvRect.height = texture->getSize().y / float(imageCount.y);
 }
 
-void SpriteObject::update(int row, float deltaTime, bool faceRight)
+void SpriteObject::animate(int row, float deltaTime, bool faceRight)
 {
 	currentImage.y = row;
 	totalTime += deltaTime;
@@ -344,10 +362,15 @@ void SpriteObject::update(int row, float deltaTime, bool faceRight)
 		uvRect.left = currentImage.x * uvRect.width;
 		uvRect.width = abs(uvRect.width);
 	}
-	else{
+	else {
 		uvRect.left = (currentImage.x + 1) * abs(uvRect.width);
 		uvRect.width = -abs(uvRect.width);
 	}
+}
+
+SpriteObject* SpriteObject::clone() const
+{
+	return new SpriteObject(*this);
 }
 
 Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, float speed)
@@ -358,25 +381,30 @@ Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, 
 	faceRight = true;
 	bool upDown = true;
 	body.setSize(sf::Vector2f(100.0f, 150.0f));
-	body.setPosition(206.0f, 206.0f);
+	body.setPosition(200.0f, 200.0f);
 	body.setTexture(texture);
 }
 
-void Player::update(float deltaTime)
+void Player::update(float deltaTime, int screenWidth, int screenHeight)
 {
 	sf::Vector2f movement(0.0f, 0.0f);
 
+	sf::Vector2f bodyPosition = body.getPosition();
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-		movement.x -= speed * deltaTime;
+		if (bodyPosition.x > 0)
+			movement.x -= speed * deltaTime;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-		movement.x += speed * deltaTime;
+		if (bodyPosition.x < screenWidth - body.getSize().x)
+			movement.x += speed * deltaTime;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-		movement.y -= speed * deltaTime;
+		if (bodyPosition.y > 0)
+			movement.y -= speed * deltaTime;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-		movement.y += speed * deltaTime;
+		if (bodyPosition.y < screenHeight - body.getSize().y)
+			movement.y += speed * deltaTime;
 	}
 
 	if (movement.x == 0.0f) {
@@ -386,16 +414,14 @@ void Player::update(float deltaTime)
 		row = 1;
 
 		if (movement.x > 0.0f) {
-			faceRight = false;
+			faceRight = true;
 		}
 		else {
-			faceRight = true;
+			faceRight = false;
 		}
 	}
 
-	
-
-	anim.update(row, deltaTime, faceRight);
+	anim.animate(row, deltaTime, faceRight);
 	body.setTextureRect(anim.uvRect);
 	body.move(movement);
 }

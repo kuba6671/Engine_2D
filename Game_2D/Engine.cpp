@@ -1,5 +1,4 @@
 #include "Engine.h"
-#include "GameObject.h"
 
 Engine::Engine(int screenWidth, int screenHeight, std::string windowTitle) {
 	this->screenWidth = screenWidth;
@@ -18,9 +17,9 @@ int Engine::init() {
 	sf::Event event;
 
 	sf::Texture playerTexture;
-	playerTexture.loadFromFile("dragon.png");
+	playerTexture.loadFromFile("bird.png");
 
-	Player player(&playerTexture, sf::Vector2u(3,4), 0.1f, 100.0f);
+	Player player(&playerTexture, sf::Vector2u(5,3), 0.1f, 100.0f);
 
 	float deltaTime = 0.0f;
 
@@ -92,7 +91,7 @@ int Engine::init() {
 			}
 		}*/
 		}
-		player.update(deltaTime);
+		player.update(deltaTime, screenWidth, screenHeight);
 		window.clear(color);
 		player.draw(window);
 		window.display();
