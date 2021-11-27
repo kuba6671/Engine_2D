@@ -53,11 +53,11 @@ void LineSegment::draw(sf::RenderWindow& window) {
 }
 
 void LineSegment::draw(sf::RenderWindow& window, sf::Color color) {
-	primitive.drawLine(window, point1, point2,color);
+	primitive.drawLine(window, point1, point2, color);
 }
 
 void LineSegment::translate(sf::RenderWindow& window, int x, int y) {
-	point1.changeX(point1.getX()+x);
+	point1.changeX(point1.getX() + x);
 	point1.changeY(point1.getY() - y);
 
 	point2.changeX(point1.getX() + x);
@@ -76,15 +76,15 @@ void LineSegment::rotate(sf::RenderWindow& window, float angle) {
 	point2.changeY((int)y2);
 }
 
-void LineSegment::scale(sf::RenderWindow& window, int x, int y) {
+void LineSegment::scale(sf::RenderWindow& window, float x, float y) {
 	float x2 = point1.getX() * x;
 	float y2 = point1.getY() * y;
 
 	point1.changeX((int)x2);
 	point1.changeY((int)y2);
 
-	 x2 = point2.getX() * x;
-	 y2 = point2.getY() * y;
+	x2 = point2.getX() * x;
+	y2 = point2.getY() * y;
 
 	point2.changeX((int)x2);
 	point2.changeY((int)y2);

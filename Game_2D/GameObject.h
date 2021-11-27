@@ -13,7 +13,7 @@ class Point2D;
 class LineSegment;
 
 /**
- * Struktura reprezentujaca klatke
+ * Struktura reprezentujaca pojedyncza klatke
  */
 struct Frame {
 	sf::IntRect rect;
@@ -155,6 +155,7 @@ protected:
 	 * \param - zmienna okresla czy bitmapa ma byc usunieta
 	 */
 	bool deleteSprite;
+	sf::Image image;
 public:
 	/**
 	 * Konstruktor domyslny
@@ -172,6 +173,7 @@ public:
 	 * \param y - pozycja y
 	 */
 	BitmapObject(std::string bitmapPath, int x, int y);
+	BitmapObject(sf::Image image);
 	/**
 	 * Metoda sluzaca do rysowania obiektow
 	 */
@@ -179,6 +181,7 @@ public:
 	virtual void deleteBitmap();
 	virtual void loadFromFile(std::string bitmapPath);
 	virtual void saveToFile(std::string fileName);
+	void saveImagetoFile(std::string fileName);
 	/**
 	 * Metoda sluzaca do klonowania obiektu
 	 * \return - zwraca sklonowany obiekt
@@ -241,6 +244,8 @@ public:
 	Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, float speed);
 	void update(float deltaTime, int screenWidth, int screenHeight);
 	void draw(sf::RenderWindow& window);
+	sf::FloatRect getGlobalBounds();
+	void setPosition(int x, int y);
 private:
 	sf::RectangleShape body;
 	SpriteObject anim;
@@ -272,7 +277,7 @@ public:
 	 * \param x
 	 * \param y
 	 */
-	virtual void scale(sf::RenderWindow& window, int x, int y) = 0;
+	virtual void scale(sf::RenderWindow& window, float x, float y) = 0;
 };
 /**
  * Klasa sluzaca do rysowania prymitywow
@@ -282,7 +287,7 @@ class PrimitiveRender : public GameObject
 public:
 	void drawLine(sf::RenderWindow& window, int x1, int y1, int x2, int y2); //the default color is white
 	/**
-	 * Metoda sluzaca do rysowania linii 
+	 * Metoda sluzaca do rysowania linii
 	 * \param x1 - wspolrzedne x pierwszego konca linii
 	 * \param y1 - - wspolrzedne y pierwszego konca linii
 	 * \param x2 - - wspolrzedne x drugiego konca linii
@@ -406,7 +411,7 @@ public:
 	void draw(sf::RenderWindow& window, sf::Color color);
 	void translate(sf::RenderWindow& window, int x, int y);
 	void rotate(sf::RenderWindow& window, float angle);
-	void scale(sf::RenderWindow& window, int x, int y);
+	void scale(sf::RenderWindow& window, float x, float y);
 	virtual Point2D* clone() const override;
 };
 /**
@@ -417,7 +422,7 @@ class LineSegment : public ShapeObject {
 public:
 	LineSegment();
 	/**
-	 * Konstruktor 
+	 * Konstruktor
 	 * \param point1 - obiekt klasy Point2D przechowujacy wspolrzedne jednego konca linii
 	 * \param point2 - obiekt klasy Point2D przechowujacy wspolrzedne drugiego konca linii
 	 */
@@ -435,7 +440,7 @@ public:
 	void draw(sf::RenderWindow& window, sf::Color color);
 	void translate(sf::RenderWindow& window, int x, int y);
 	void rotate(sf::RenderWindow& window, float angle);
-	void scale(sf::RenderWindow& window, int x, int y);
+	void scale(sf::RenderWindow& window, float x, float y);
 	virtual LineSegment* clone() const override;
 };
 /**
@@ -450,21 +455,24 @@ public:
 	void draw(sf::RenderWindow& window, sf::Color color);
 	void translate(sf::RenderWindow& window, int x, int y);
 	void rotate(sf::RenderWindow& window, float angle);
-	void scale(sf::RenderWindow& window, int x, int y);
+	void scale(sf::RenderWindow& window, float x, float y);
 	virtual Circle* clone() const override;
-
 };
+
 /** Klasa repreznetujca prostokat */
 class Rectangle : public ShapeObject {
 	sf::RectangleShape rectangle;
 	int sizeX, sizeY, x, y;
+	float angle = 0.0;
 public:
 	Rectangle(int sizeX, int sizeY, int x, int y);
 	void draw(sf::RenderWindow& window);
 	void draw(sf::RenderWindow& window, sf::Color color);
 	void translate(sf::RenderWindow& window, int x, int y);
 	void rotate(sf::RenderWindow& window, float angle);
-	void scale(sf::RenderWindow& window, int x, int y);
+	void scale(sf::RenderWindow& window, float x, float y);
+	void setColor(sf::Color color);
+	sf::FloatRect getGlobalBounds();
 	virtual Rectangle* clone() const override;
 };
 /** Klasa reprezentujaca trojkat */
@@ -477,7 +485,7 @@ public:
 	void draw(sf::RenderWindow& window, sf::Color color);
 	void translate(sf::RenderWindow& window, int x, int y);
 	void rotate(sf::RenderWindow& window, float angle);
-	void scale(sf::RenderWindow& window, int x, int y);
+	void scale(sf::RenderWindow& window, float x, float y);
 	virtual Triangle* clone() const override;
 };
 /** Klasa repreznetujaca wielokat zbudowany z wielu linii */
@@ -488,7 +496,7 @@ public:
 	void draw(sf::RenderWindow& window);
 	void translate(sf::RenderWindow& window, int x, int y);
 	void rotate(sf::RenderWindow& window, float angle);
-	void scale(sf::RenderWindow& window, int x, int y);
+	void scale(sf::RenderWindow& window, float x, float y);
 	virtual Polyline* clone() const override;
 };
 /**
@@ -502,7 +510,7 @@ public:
 	void draw(sf::RenderWindow& window);
 	void translate(sf::RenderWindow& window, int x, int y);
 	void rotate(sf::RenderWindow& window, float angle);
-	void scale(sf::RenderWindow& window, int x, int y);
+	void scale(sf::RenderWindow& window, float x, float y);
 	virtual Ellipse* clone() const override;
 };
 /** Klasa reprezentujaca wielokat */
@@ -513,7 +521,7 @@ public:
 	void draw(sf::RenderWindow& window);
 	void translate(sf::RenderWindow& window, int x, int y);
 	void rotate(sf::RenderWindow& window, float angle);
-	void scale(sf::RenderWindow& window, int x, int y);
+	void scale(sf::RenderWindow& window, float x, float y);
 	virtual Polygon* clone() const override;
 };
 

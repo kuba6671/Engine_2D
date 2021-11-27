@@ -36,7 +36,7 @@ public:
 	Engine(int screenWidth, int screenHeight);
 	/**
 	 * Metoda inicjujaca glowna petle gry
-	 * \return 
+	 * \return
 	 */
 	int init();
 	//~Engine();

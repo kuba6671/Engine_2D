@@ -30,7 +30,7 @@ void Circle::rotate(sf::RenderWindow& window, float angle) {
 	circle.rotate(angle);
 }
 
-void Circle::scale(sf::RenderWindow& window, int x, int y) {
+void Circle::scale(sf::RenderWindow& window, float x, float y) {
 	circle.setScale(sf::Vector2f(x, y));
 }
 
@@ -46,11 +46,14 @@ Rectangle::Rectangle(int sizeX, int sizeY, int x, int y) {
 	this->sizeY = sizeY;
 	this->x = x;
 	this->y = y;
+	//angle = 0.0;
+	rectangle.setRotation(angle);
 }
 
 void Rectangle::draw(sf::RenderWindow& window) {
 	rectangle.setSize(sf::Vector2f(sizeX, sizeY));
 	rectangle.setPosition(sf::Vector2f(x, y));
+	rectangle.setRotation(angle);
 	window.draw(rectangle);
 }
 
@@ -58,6 +61,7 @@ void Rectangle::draw(sf::RenderWindow& window, sf::Color color) {
 	rectangle.setSize(sf::Vector2f(sizeX, sizeY));
 	rectangle.setPosition(sf::Vector2f(x, y));
 	rectangle.setFillColor(color);
+	rectangle.setRotation(angle);
 	window.draw(rectangle);
 }
 
@@ -67,11 +71,23 @@ void Rectangle::translate(sf::RenderWindow& window, int x, int y) {
 }
 
 void Rectangle::rotate(sf::RenderWindow& window, float angle) {
-	rectangle.rotate(angle);
+	this->angle += angle;
+	//std::cout << "angle=" << this->angle << std::endl;
+	//rectangle.rotate(angle);
 }
 
-void Rectangle::scale(sf::RenderWindow& window, int x, int y) {
+void Rectangle::scale(sf::RenderWindow& window, float x, float y) {
 	rectangle.setScale(sf::Vector2f(x, y));
+}
+
+void Rectangle::setColor(sf::Color color)
+{
+	rectangle.setFillColor(color);
+}
+
+sf::FloatRect Rectangle::getGlobalBounds()
+{
+	return rectangle.getGlobalBounds();
 }
 
 Rectangle* Rectangle::clone() const {
@@ -110,7 +126,7 @@ void Triangle::rotate(sf::RenderWindow& window, float angle) {
 	triangle.rotate(angle);
 }
 
-void Triangle::scale(sf::RenderWindow& window, int x, int y) {
+void Triangle::scale(sf::RenderWindow& window, float x, float y) {
 	triangle.setScale(sf::Vector2f(x, y));
 }
 
@@ -154,7 +170,7 @@ void Polyline::rotate(sf::RenderWindow& window, float angle) {
 }
 
 
-void Polyline::scale(sf::RenderWindow& window, int x, int y) {
+void Polyline::scale(sf::RenderWindow& window, float x, float y) {
 	std::vector<LineSegment>::iterator it = lineVector.begin();
 	float x2, y2;
 	for (LineSegment& i : lineVector) {
@@ -197,7 +213,7 @@ void Ellipse::rotate(sf::RenderWindow& window, float angle) {
 	this->positionY = (int)y2;
 }
 
-void Ellipse::scale(sf::RenderWindow& window, int x, int y) {
+void Ellipse::scale(sf::RenderWindow& window, float x, float y) {
 	float x2 = positionX * x;
 	float y2 = positionY * y;
 
@@ -240,7 +256,7 @@ void Polygon::rotate(sf::RenderWindow& window, float angle) {
 	}
 }
 
-void Polygon::scale(sf::RenderWindow& window, int x, int y) {
+void Polygon::scale(sf::RenderWindow& window, float x, float y) {
 	int n = P.size();
 	for (int i = 0; i < n; i++) {
 		float x2 = P[i].getX() * x;
@@ -278,20 +294,25 @@ void UpdatableBitmap::move(sf::RenderWindow window, int x, int y) {
 BitmapObject::BitmapObject(std::string bitmapPath)
 {
 	if (!textureBitmap.loadFromFile(bitmapPath)) {
-				throw EXIT_FAILURE;
-			}
-			sprite.setTexture(textureBitmap);
-			deleteSprite = false;
+		throw EXIT_FAILURE;
+	}
+	sprite.setTexture(textureBitmap);
+	deleteSprite = false;
 }
 
 BitmapObject::BitmapObject(std::string bitmapPath, int x, int y)
 {
 	if (!textureBitmap.loadFromFile(bitmapPath)) {
-				throw EXIT_FAILURE;
-			}
-			sprite.setTexture(textureBitmap);
-			setBitmapPosition(x, y);
-			deleteSprite = false;
+		throw EXIT_FAILURE;
+	}
+	sprite.setTexture(textureBitmap);
+	setBitmapPosition(x, y);
+	deleteSprite = false;
+}
+
+BitmapObject::BitmapObject(sf::Image image)
+{
+	this->image = image;
 }
 
 void BitmapObject::draw(sf::RenderWindow& window) {
@@ -313,6 +334,11 @@ void BitmapObject::loadFromFile(std::string bitmapPath) {
 
 void BitmapObject::saveToFile(std::string fileName) {
 	textureBitmap.copyToImage().saveToFile(fileName);
+}
+
+void BitmapObject::saveImagetoFile(std::string fileName)
+{
+	image.saveToFile(fileName);
 }
 
 BitmapObject* BitmapObject::clone() const {
@@ -381,7 +407,7 @@ Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, 
 	faceRight = true;
 	bool upDown = true;
 	body.setSize(sf::Vector2f(100.0f, 150.0f));
-	body.setPosition(200.0f, 200.0f);
+	body.setPosition(100.0f, 500.0f);
 	body.setTexture(texture);
 }
 
@@ -429,4 +455,14 @@ void Player::update(float deltaTime, int screenWidth, int screenHeight)
 void Player::draw(sf::RenderWindow& window)
 {
 	window.draw(body);
+}
+
+sf::FloatRect Player::getGlobalBounds()
+{
+	return body.getGlobalBounds();
+}
+
+void Player::setPosition(int x, int y)
+{
+	body.setPosition(x, y);
 }

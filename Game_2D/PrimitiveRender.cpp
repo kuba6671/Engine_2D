@@ -275,7 +275,7 @@ void PrimitiveRender::boundryFill(sf::RenderWindow& window, int x, int y, sf::Co
 	textureBitmap.create(windowSize.x, windowSize.y);
 	textureBitmap.update(window);
 	sf::Image image = textureBitmap.copyToImage();
-	if((image.getPixel(x, y) == fill_color))
+	if ((image.getPixel(x, y) == fill_color))
 		return;
 	else if (image.getPixel(x, y) != boundry_color) {
 		drawPoint(window, x, y, fill_color);
