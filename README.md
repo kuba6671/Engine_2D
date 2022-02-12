@@ -1,3 +1,3 @@
-# Game_2D
+# Engine_2D
 University project
 Game in SFML(C++ Language)
