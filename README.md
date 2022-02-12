@@ -1,3 +1,3 @@
 # Engine_2D
 University project
-Game in SFML(C++ Language)
+Game engine in SFML(C++ Language)
